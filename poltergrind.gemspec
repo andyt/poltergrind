@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Andy Triggs']
   spec.email         = ['andy.triggs@gmail.com']
   spec.summary       = 'Poltergrind: realistic load testing'
-  spec.description   = 'Load testing tool using a headless Webkit browser via Poltergeist.'
+  spec.description   = 'Load testing tool using concurrent headless Webkit browsers via Poltergeist and Sidekiq.'
   spec.homepage      = 'http://github.com/andyt/poltergrind'
   spec.license       = 'MIT'
 
