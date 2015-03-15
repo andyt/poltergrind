@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require 'bundler'
+Bundler.setup
+
+require 'poltergrind/console'
+Poltergrind::Console.new.start
+
