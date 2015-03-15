@@ -12,7 +12,7 @@ module Poltergrind
       base.include RSpec::Matchers
 
       base.instance_eval do
-        sidekiq_options retry: 0
+        sidekiq_options retry: false, dead: false
       end
     end
 
