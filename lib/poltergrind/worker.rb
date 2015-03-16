@@ -31,9 +31,13 @@ module Poltergrind
     end
 
     def perform
-      Capybara.using_session 'poltergrind' do
-        yield
+      @fork_pid = fork do
+        Capybara.using_session 'poltergrind' do
+          yield
+        end
       end
+
+      Process.waitpid(@fork_pid)
     end
   end
 end
