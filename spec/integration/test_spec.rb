@@ -13,10 +13,10 @@ module Poltergrind
       end
 
       def perform
-        time('example-test') do
+        time('google.homepage') do
           visit 'http://google.com/'
-          expect(page).to have_content 'Google'
           puts current_url
+          expect(page).to have_css %Q|input[value="I'm Feeling Lucky"]|
         end
       end
     end
