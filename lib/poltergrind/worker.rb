@@ -30,12 +30,6 @@ module Poltergrind
       end
     end
 
-    def time(key)
-      statsd.time(key) do
-        yield
-      end
-    end
-
     def statsd
       self.class.statsd
     end

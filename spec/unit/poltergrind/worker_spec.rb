@@ -17,10 +17,6 @@ module Poltergrind
       expect(instance).to respond_to :visit
     end
 
-    it 'provides #time' do
-      expect(instance).to respond_to :time
-    end
-
     it 'provides .namespace' do
       expect(klass.namespace).to eq 'poltergrind.TestClass'
     end
