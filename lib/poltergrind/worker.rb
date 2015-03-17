@@ -2,10 +2,16 @@ require 'capybara/dsl'
 require 'sidekiq'
 require 'statsd'
 require 'rspec'
+require 'forwardable'
+
 require 'poltergrind/capybara'
 
 module Poltergrind
   module Worker
+    extend Forwardable
+
+    def_delegators :statsd, :time, :increment, :decrement, :timing, :gauge, :count
+
     def self.included(base)
       base.include Capybara::DSL
       base.include Sidekiq::Worker
@@ -13,11 +19,15 @@ module Poltergrind
 
       base.instance_eval do
         sidekiq_options retry: false, dead: false
-      end
-    end
 
-    def self.statsd
-      @statsd ||= Statsd.new('localhost').tap { |sd| sd.namespace = 'poltergrind' }
+        def self.namespace
+          "poltergrind.#{name}"
+        end
+
+        def self.statsd
+          @statsd ||= Statsd.new('localhost').tap { |sd| sd.namespace = namespace }
+        end
+      end
     end
 
     def time(key)
@@ -27,17 +37,23 @@ module Poltergrind
     end
 
     def statsd
-      Poltergrind::Worker.statsd
+      self.class.statsd
+    end
+
+    def session_name
+      "poltergrind-#{Thread.current.object_id}"
     end
 
     def perform
-      @fork_pid = fork do
-        Capybara.using_session 'poltergrind' do
+      Capybara.using_session(session_name) do
+        gauge 'perform.start', Time.now
+
+        time 'perform.total' do
           yield
         end
-      end
 
-      Process.waitpid(@fork_pid)
+        gauge 'perform.finish', Time.now
+      end
     end
   end
 end
