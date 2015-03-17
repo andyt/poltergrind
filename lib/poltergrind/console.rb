@@ -5,8 +5,9 @@ require 'poltergrind/console'
 module Poltergrind
   class Console
     def start
-      require File.expand_path('../../../examples/examples.rb', __FILE__)
-      binding.pry
+      require 'examples/examples'
+      Pry.config.prompt_name = 'Poltergrind'
+      Pry.start
     end
   end
 end
