@@ -4,7 +4,7 @@ class TestappTest
   include Poltergrind::Worker
 
   def perform
-    time('testapp.load') do
+    super do
       visit 'http://localhost:8999/'
       puts current_url
       expect(page).to have_text 'slow'
