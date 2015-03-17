@@ -47,7 +47,13 @@ module Poltergrind
 
     describe '#perform' do
       it 'times each job' do
-        expect(instance).to receive(:time).with('perform.total')
+        expect(instance).to receive(:time).with('perform.duration')
+
+        instance.perform { nil }
+      end
+
+      it 'counts each job' do
+        expect(instance).to receive(:increment).with('perform.count')
 
         instance.perform { nil }
       end

@@ -46,9 +46,10 @@ module Poltergrind
 
     def perform
       Capybara.using_session(session_name) do
+        increment 'perform.count'
         gauge 'perform.start', Time.now.to_i
 
-        time 'perform.total' do
+        time 'perform.duration' do
           yield
         end
 
