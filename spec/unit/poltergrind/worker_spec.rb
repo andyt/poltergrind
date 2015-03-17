@@ -53,9 +53,9 @@ module Poltergrind
       end
 
       it 'calls #gauge for the start and end time of each job' do
-        allow(Time).to receive(:now).and_return(12345, 12346)
-        expect(instance).to receive(:gauge).with('perform.start', 12345)
-        expect(instance).to receive(:gauge).with('perform.finish', 12346)
+        allow(Time).to receive(:now).and_return(Time.at(1426587858), Time.at(1426587859))
+        expect(instance).to receive(:gauge).with('perform.start', 1426587858)
+        expect(instance).to receive(:gauge).with('perform.finish', 1426587859)
 
         instance.perform { nil }
       end
