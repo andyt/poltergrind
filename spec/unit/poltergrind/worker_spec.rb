@@ -37,7 +37,15 @@ module Poltergrind
 
     it 'delegates statsd methods' do
       %i(time increment decrement timing gauge count).each do |method|
-        expect(instance).to respond_to method
+        expect(instance.statsd).to receive(method)
+
+        if method == :time
+          instance.send(method, 'key'){ nil }
+        elsif method =~ /^(in|de)crement$/
+          instance.send(method, 'key')
+        else
+          instance.send(method, 'key', 1)
+        end
       end
     end
 
