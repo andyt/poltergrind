@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Poltergrind::VERSION
   spec.authors       = ['Andy Triggs']
   spec.email         = ['andy.triggs@gmail.com']
-  spec.summary       = 'Poltergrind: realistic load testing'
-  spec.description   = 'Load testing tool using concurrent headless Webkit browsers via Poltergeist and Sidekiq.'
+  spec.summary       = 'Poltergrind: full-stack performance testing using the Capybara DSL.'
+  spec.description   = 'Performance testing tool using concurrent headless Webkit browsers via Poltergeist and Sidekiq.'
   spec.homepage      = 'http://github.com/andyt/poltergrind'
   spec.license       = 'MIT'
 
