@@ -67,7 +67,7 @@ To create your own test worker, include Poltergrind::Worker in a Sidekiq worker:
 You can do what you like in here for your tests orchestrated by #perform: you can split it up into steps, nest calls to #time or any of the other methods delegated to statsd-ruby, and have some class methods (e.g. self.perform) that you 
 can call to run repeatable tests more easily.
 
-This hopefully gives a full-stack Javascript performance testing framework to simulate real users hitting your application.
+This hopefully gives a full-stack Javascript performance testing framework to simulate real users hitting your application, with the familiar DSL of Capybara and easily manageable concurrency.
 
 There's no reason why this needs to use phantomjs. It could be extended to use anything that Capybara supports such as firefox or chromedriver, although phantomjs is possibly fastest and easiest to get going headless.
 
