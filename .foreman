@@ -1,1 +1,1 @@
-concurrency: worker=16,redis-server=1,statsd=1,testapp=1
+concurrency: worker=8,redis-server=1,statsd=1,web-test=1

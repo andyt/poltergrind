@@ -1,6 +1,6 @@
 require 'poltergrind/worker'
 
-class TestappTest
+class TestAppWorker
   include Poltergrind::Worker
 
   def perform

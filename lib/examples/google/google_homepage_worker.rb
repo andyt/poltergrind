@@ -1,6 +1,6 @@
 require 'poltergrind/worker'
 
-class GoogleHomepageTest
+class GoogleHomepageWorker
   include Poltergrind::Worker
 
   def self.perform
