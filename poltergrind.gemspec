@@ -19,6 +19,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'sidekiq', '~> 3.0'
+  spec.add_dependency 'sidekiq-web'
+  spec.add_dependency 'sidekiq-enqueuer'
   spec.add_dependency 'poltergeist', '~> 1.6.0'
   spec.add_dependency 'statsd-ruby', '~> 1.2'
   spec.add_dependency 'pry'
