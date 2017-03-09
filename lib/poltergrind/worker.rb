@@ -21,7 +21,7 @@ module Poltergrind
         sidekiq_options retry: false, dead: false
 
         def self.statsd
-          @statsd ||= Poltergrind.statsd(namespace: name)
+          @statsd ||= Poltergrind.statsd(namespace: name.gsub('::', '.'))
         end
       end
     end

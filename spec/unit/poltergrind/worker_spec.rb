@@ -4,7 +4,7 @@ module Poltergrind
   describe Worker do
     let(:klass) do
       Class.new do
-        def self.name; 'TestClass'; end
+        def self.name; 'TestModule::TestClass'; end
         include Poltergrind::Worker
       end
     end
@@ -26,7 +26,7 @@ module Poltergrind
     end
 
     it 'requests a statsd client with a namespace based on the worker class name' do
-      expect(Poltergrind).to receive(:statsd).with(namespace: 'TestClass').and_return(statsd)
+      expect(Poltergrind).to receive(:statsd).with(namespace: 'TestModule.TestClass').and_return(statsd)
 
       instance.perform { nil }
     end
