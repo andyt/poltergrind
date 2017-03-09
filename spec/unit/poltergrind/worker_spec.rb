@@ -18,15 +18,17 @@ module Poltergrind
     end
 
     before do
-      allow(Statsd).to receive(:new).and_return(statsd)
+      allow(Poltergrind).to receive(:statsd).and_return(statsd)
     end
 
     it 'provides the Capybara DSL' do
       expect(instance).to respond_to :visit
     end
 
-    it 'provides .namespace' do
-      expect(klass.namespace).to eq 'poltergrind.TestClass'
+    it 'requests a statsd client with a namespace based on the worker class name' do
+      expect(Poltergrind).to receive(:statsd).with(namespace: 'TestClass').and_return(statsd)
+
+      instance.perform { nil }
     end
 
     it 'includes Sidekiq::Worker' do

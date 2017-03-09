@@ -20,12 +20,8 @@ module Poltergrind
       base.instance_eval do
         sidekiq_options retry: false, dead: false
 
-        def self.namespace
-          "poltergrind.#{name}"
-        end
-
         def self.statsd
-          @statsd ||= Statsd.new('localhost').tap { |sd| sd.namespace = namespace }
+          @statsd ||= Poltergrind.statsd(namespace: name)
         end
       end
     end
