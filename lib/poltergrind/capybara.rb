@@ -5,7 +5,7 @@ Capybara.register_driver :poltergeist do |app|
       js_errors: true,
       timeout: 120,
       debug: ENV['DEBUG'] == '1',
-      phantomjs_options: %w{--load-images=no --disk-cache=false --ignore-ssl-errors=true --ssl-protocol=tlsv1 --local-to-remote-url-access=true --web-security=false},
+      phantomjs_options: %w{--load-images=no --disk-cache=false --ignore-ssl-errors=true --local-to-remote-url-access=true --web-security=false},
       inspector: true, # use page.driver.debug
   }
   Capybara::Poltergeist::Driver.new(app, options)
