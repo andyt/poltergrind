@@ -10,7 +10,7 @@ module Poltergrind
   module Worker
     extend Forwardable
 
-    def_delegators :statsd, :time, :increment, :decrement, :timing, :gauge, :count
+    def_delegators :statsd, :increment, :decrement, :timing, :gauge, :count
 
     def self.included(base)
       base.include Capybara::DSL
@@ -30,25 +30,38 @@ module Poltergrind
       end
     end
 
+    def perform
+      increment 'perform.count.tests'
+      gauge 'perform.start', Time.now.to_i
+
+      with_capybara_session do
+        yield
+      end
+
+      gauge 'perform.finish', Time.now.to_i
+      increment 'perform.count.success'
+    rescue Exception => _
+      increment 'perform.count.errors'
+
+      raise
+    end
+
+    private
+
+    def with_capybara_session
+      start = Time.now.to_f
+
+      session_name = "poltergrind-#{Thread.current.object_id}"
+
+      Capybara.using_session(session_name) do
+        yield
+      end
+
+      statsd.timing('perform.duration', Time.now.to_f - start)
+    end
+
     def statsd
       self.class.statsd
-    end
-
-    def session_name
-      "poltergrind-#{Thread.current.object_id}"
-    end
-
-    def perform
-      Capybara.using_session(session_name) do
-        increment 'perform.count'
-        gauge 'perform.start', Time.now.to_i
-
-        time 'perform.duration' do
-          yield
-        end
-
-        gauge 'perform.finish', Time.now.to_i
-      end
     end
   end
 end

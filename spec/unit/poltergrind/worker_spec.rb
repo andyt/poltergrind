@@ -13,6 +13,14 @@ module Poltergrind
       klass.new
     end
 
+    let(:statsd) do
+      instance_spy('Statsd', increment: true, gauge: true)
+    end
+
+    before do
+      allow(Statsd).to receive(:new).and_return(statsd)
+    end
+
     it 'provides the Capybara DSL' do
       expect(instance).to respond_to :visit
     end
@@ -25,19 +33,9 @@ module Poltergrind
       expect(klass).to respond_to :perform_async
     end
 
-    describe '#statsd' do
-      it 'is a Statsd client' do
-        expect(instance.statsd).to be_a Statsd
-      end
-
-      it 'has a namespace for the class' do
-        expect(instance.statsd.namespace).to eq 'poltergrind.TestClass'
-      end
-    end
-
-    it 'delegates statsd methods' do
-      %i(time increment decrement timing gauge count).each do |method|
-        expect(instance.statsd).to receive(method)
+    it 'delegates statsd methods, excluding time' do
+      %i(increment decrement timing gauge count).each do |method|
+        expect(statsd).to receive(method)
 
         if method == :time
           instance.send(method, 'key'){ nil }
@@ -50,24 +48,40 @@ module Poltergrind
     end
 
     describe '#perform' do
-      it 'times each job' do
-        expect(instance).to receive(:time).with('perform.duration')
-
+      it 'times each session' do
         instance.perform { nil }
+
+        expect(statsd).to have_received(:timing).with('perform.duration', anything)
       end
 
       it 'counts each job' do
-        expect(instance).to receive(:increment).with('perform.count')
-
         instance.perform { nil }
+
+        expect(statsd).to have_received(:increment).with('perform.count.tests')
+      end
+
+      it 'counts each success' do
+        instance.perform { nil }
+
+        expect(statsd).to have_received(:increment).with('perform.count.success')
       end
 
       it 'calls #gauge for the start and end time of each job' do
         allow(Time).to receive(:now).and_return(Time.at(1426587858), Time.at(1426587859))
-        expect(instance).to receive(:gauge).with('perform.start', 1426587858)
-        expect(instance).to receive(:gauge).with('perform.finish', 1426587859)
 
         instance.perform { nil }
+
+        expect(statsd).to have_received(:gauge).with('perform.start', 1426587858)
+        expect(statsd).to have_received(:gauge).with('perform.finish', 1426587859)
+      end
+
+      context 'on error' do
+        it 'increments a failure counter and re-raises the error' do
+          expect { instance.perform { raise 'An error' } }.to raise_error('An error')
+
+          expect(statsd).to have_received(:increment).with('perform.count.errors')
+          expect(statsd).to have_received(:increment).with('perform.count.tests')
+        end
       end
     end
   end
