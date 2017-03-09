@@ -1,3 +1,5 @@
+require 'statsd'
+
 require 'poltergrind/version'
 require 'poltergrind/worker'
 
